@@ -1,165 +1,276 @@
-import React, { useState } from 'react';
-import { 
-  GitBranch, 
-  Bot, 
-  User, 
-  Sparkles, 
-  Lightbulb, 
-  ArrowRight
-} from 'lucide-react';
+import React, { useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  Brain,
+  MessageCircleMore,
+  ChevronRight,
+} from "lucide-react";
+
+const followUps = [
+  {
+    question: "Why did you choose that approach?",
+    tag: "Reasoning",
+    description:
+      "The interviewer wants to understand how you make decisions.",
+  },
+  {
+    question: "What would you do differently?",
+    tag: "Reflection",
+    description:
+      "Good candidates can evaluate their own decisions and improve them.",
+  },
+  {
+    question: "How do you know that would work?",
+    tag: "Evidence",
+    description:
+      "The AI pushes you to support your answer with evidence.",
+  },
+];
 
 export const Scene4FollowUpDemo: React.FC = () => {
-  const [activeStep, setActiveStep] = useState<number>(1);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [activeQuestion, setActiveQuestion] = useState(0);
 
-  const conversationSteps = [
-    {
-      step: 1,
-      speaker: 'ai',
-      text: 'Tell me about a difficult technical problem you solved in your recent role.',
-      badge: 'Core Question'
-    },
-    {
-      step: 2,
-      speaker: 'candidate',
-      text: 'Our analytics dashboard had a 4-second latency spike during high traffic. I solved it by caching the aggregate queries with a Redis cluster and tuning the PostgreSQL indexes.',
-      badge: 'Candidate Answer (Context Stated)'
-    },
-    {
-      step: 3,
-      speaker: 'ai',
-      text: 'Why did you choose Redis over in-memory application caching like Memcached or Node local cache, and how did you handle cache invalidation on write bursts?',
-      badge: 'Intelligent Follow-Up #1 (Probing Trade-offs)',
-      isHighlight: true
-    },
-    {
-      step: 4,
-      speaker: 'candidate',
-      text: 'We had multiple stateless backend replicas, so local memory would lead to stale inconsistent counts. We used Redis with a write-through invalidation bus via RabbitMQ.',
-      badge: 'Candidate Clarification'
-    },
-    {
-      step: 5,
-      speaker: 'ai',
-      text: 'What would happen to your primary database if that Redis cluster experienced a cold cache restart under peak load, and how would you protect it?',
-      badge: 'Intelligent Follow-Up #2 (Resilience & Chaos Engineering)',
-      isHighlight: true
-    }
-  ];
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const titleY = useTransform(
+    scrollYProgress,
+    [0, 0.4],
+    [100, 0]
+  );
+
+  const titleOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.25],
+    [0, 1]
+  );
+
+  const demoY = useTransform(
+    scrollYProgress,
+    [0, 0.5],
+    [140, 0]
+  );
+
+  const demoRotateX = useTransform(
+    scrollYProgress,
+    [0, 0.5],
+    [10, 0]
+  );
+
+  const lineScale = useTransform(
+    scrollYProgress,
+    [0, 0.5],
+    [0, 1]
+  );
+
+  const active = followUps[activeQuestion];
 
   return (
-    <section className="py-24 relative overflow-hidden bg-slate-900/40 dark:bg-black/40 border-y border-slate-200/60 dark:border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <GitBranch className="w-3.5 h-3.5" />
-            <span>DEEP CONVERSATIONAL REASONING</span>
-          </div>
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen overflow-hidden bg-[var(--bg)] px-6 py-32"
+    >
+      {/* Background glow */}
+      <div className="pointer-events-none absolute right-[-10%] top-[20%] h-[600px] w-[600px] rounded-full bg-[#FF6B4A]/[0.05] blur-[180px]" />
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
-            Real interviewers don&apos;t move to the next question.{' '}
-            <span className="gradient-text-brand">They probe deeper.</span>
+      <div className="relative mx-auto max-w-7xl">
+        {/* HEADING */}
+        <motion.div
+          style={{
+            y: titleY,
+            opacity: titleOpacity,
+          }}
+          className="mx-auto mb-20 max-w-4xl text-center"
+        >
+          <p className="mb-5 text-sm uppercase tracking-[0.25em] text-[#FF6B4A]">
+            The conversation gets harder
+          </p>
+
+          <h2 className="text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-[var(--text)] md:text-7xl">
+            A good answer
+            <br />
+            isn't the end.
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
-            SmartPrepration analyzes the technical choices mentioned in your answer and immediately tests your architectural reasoning with contextual follow-ups.
+          <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
+            A real interviewer listens to your answer, notices the gaps,
+            and asks the question you didn't expect.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Interactive Dynamic Tree Card */}
-        <div className="max-w-4xl mx-auto glass-panel-glow rounded-3xl p-6 sm:p-8 border border-indigo-500/30">
-          
-          {/* Header Bar */}
-          <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-6">
-            <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                LIVE INTERACTIVE FOLLOW-UP SIMULATION
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-              <span>Step {activeStep} of 5</span>
-            </div>
-          </div>
+        {/* INTERVIEW DEMO */}
+        <motion.div
+          style={{
+            y: demoY,
+            rotateX: demoRotateX,
+            perspective: 1200,
+          }}
+          className="relative mx-auto max-w-5xl"
+        >
+          <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-white/[0.03] shadow-2xl backdrop-blur-xl">
+            {/* TOP BAR */}
+            <div className="flex items-center justify-between border-b border-white/[0.07] px-6 py-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D6FF3F]/10">
+                  <Brain className="h-5 w-5 text-[#D6FF3F]" />
+                </div>
 
-          {/* Stepper Dialogue Bubbles */}
-          <div className="space-y-4 mb-8">
-            {conversationSteps.slice(0, activeStep).map((item, idx) => (
-              <div 
-                key={idx} 
-                className={`p-4 rounded-2xl transition-all duration-300 ${
-                  item.speaker === 'ai'
-                    ? item.isHighlight
-                      ? 'bg-gradient-to-r from-indigo-950/70 to-blue-950/60 border border-indigo-500/40 text-white shadow-lg'
-                      : 'bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10'
-                    : 'bg-cyan-500/10 border border-cyan-500/20 text-slate-800 dark:text-slate-200 ml-4 sm:ml-8'
-                }`}
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+                    SmartPrepration AI
+                  </p>
+
+                  <p className="text-sm font-medium text-[var(--text)]">
+                    Follow-up analysis active
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-full border border-[#FF6B4A]/20 bg-[#FF6B4A]/10 px-3 py-1.5">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#FF6B4A]" />
+
+                <span className="text-xs font-medium text-[#FF6B4A]">
+                  Challenging
+                </span>
+              </div>
+            </div>
+
+            {/* CHAT AREA */}
+            <div className="p-6 md:p-10">
+              {/* USER ANSWER */}
+              <div className="ml-auto max-w-2xl rounded-2xl rounded-tr-sm border border-white/[0.08] bg-white/[0.04] p-5">
+                <p className="mb-2 text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
+                  Your answer
+                </p>
+
+                <p className="leading-relaxed text-[var(--text)]">
+                  "I decided to prioritize the feature based on customer
+                  feedback and the potential business impact."
+                </p>
+              </div>
+
+              {/* CONNECTING LINE */}
+              <motion.div
+                style={{
+                  scaleY: lineScale,
+                }}
+                className="my-6 ml-10 h-16 w-px origin-top bg-gradient-to-b from-[#D6FF3F] to-[#FF6B4A]/20"
+              />
+
+              {/* AI FOLLOW-UP */}
+              <motion.div
+                key={activeQuestion}
+                initial={{
+                  opacity: 0,
+                  x: -40,
+                  scale: 0.96,
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 180,
+                  damping: 20,
+                }}
+                className="max-w-3xl rounded-2xl rounded-tl-sm border border-[#D6FF3F]/20 bg-[#D6FF3F]/[0.04] p-6 md:p-8"
               >
-                <div className="flex items-start gap-3">
-                  <div className={`p-2 rounded-xl shrink-0 mt-0.5 ${
-                    item.speaker === 'ai' 
-                      ? 'bg-indigo-500/20 text-indigo-400' 
-                      : 'bg-cyan-500/20 text-cyan-400'
-                  }`}>
-                    {item.speaker === 'ai' ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                <div className="mb-6 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D6FF3F]/10">
+                    <MessageCircleMore className="h-5 w-5 text-[#D6FF3F]" />
                   </div>
 
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1.5 flex-wrap gap-2">
-                      <span className="text-xs font-bold tracking-wide uppercase text-slate-400">
-                        {item.speaker === 'ai' ? 'Dr. Evelyn Vance (AI Interviewer)' : 'Candidate (You)'}
-                      </span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                        item.isHighlight
-                          ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
-                          : 'bg-slate-200/50 dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-white/10'
-                      }`}>
-                        {item.badge}
-                      </span>
-                    </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.16em] text-[#D6FF3F]">
+                      AI Interviewer
+                    </p>
 
-                    <p className="text-xs sm:text-sm leading-relaxed font-medium">
-                      &quot;{item.text}&quot;
+                    <p className="text-xs text-[var(--muted)]">
+                      {active.tag}
                     </p>
                   </div>
                 </div>
+
+                <h3 className="text-2xl font-medium leading-tight text-[var(--text)] md:text-4xl">
+                  {active.question}
+                </h3>
+
+                <p className="mt-5 max-w-xl leading-relaxed text-[var(--muted)]">
+                  {active.description}
+                </p>
+              </motion.div>
+
+              {/* QUESTION CONTROLS */}
+              <div className="mt-10 flex flex-wrap gap-3">
+                {followUps.map((item, index) => (
+                  <button
+                    key={item.question}
+                    type="button"
+                    onClick={() => setActiveQuestion(index)}
+                    className={`group flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all ${
+                      activeQuestion === index
+                        ? "border-[#D6FF3F]/40 bg-[#D6FF3F] text-[#090B0A]"
+                        : "border-white/[0.08] bg-white/[0.02] text-[var(--muted)] hover:border-[#D6FF3F]/30 hover:text-[var(--text)]"
+                    }`}
+                  >
+                    <span>0{index + 1}</span>
+
+                    <ChevronRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                  </button>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
 
-          {/* Step Progress Controller */}
-          <div className="pt-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center gap-2">
-              <Lightbulb className="w-4 h-4 text-amber-400" />
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                {activeStep === 5 ? 'All follow-up stages demonstrated.' : 'Click next step to see how the AI probes candidate depth.'}
+          {/* FLOATING PRESSURE INDICATOR */}
+          <motion.div
+            animate={{
+              y: [0, -10, 0],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+            }}
+            className="absolute -right-6 top-1/2 hidden rounded-2xl border border-white/[0.08] bg-[#0D100E]/80 px-5 py-4 shadow-2xl backdrop-blur-xl lg:block"
+          >
+            <p className="text-[10px] uppercase tracking-[0.16em] text-[var(--muted)]">
+              Pressure level
+            </p>
+
+            <div className="mt-3 flex items-center gap-3">
+              <div className="h-2 w-20 overflow-hidden rounded-full bg-white/[0.06]">
+                <motion.div
+                  animate={{
+                    width: ["55%", "82%", "68%"],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                  }}
+                  className="h-full bg-[#FF6B4A]"
+                />
+              </div>
+
+              <span className="text-xs font-bold text-[#FF6B4A]">
+                HIGH
               </span>
             </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                disabled={activeStep <= 1}
-                onClick={() => setActiveStep(prev => Math.max(1, prev - 1))}
-                className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-200/50 dark:bg-white/5 text-slate-400 hover:text-white disabled:opacity-40 disabled:pointer-events-none"
-              >
-                Previous
-              </button>
-
-              <button
-                disabled={activeStep >= conversationSteps.length}
-                onClick={() => setActiveStep(prev => Math.min(conversationSteps.length, prev + 1))}
-                className="btn-primary px-4 py-1.5 text-xs font-semibold flex items-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none"
-              >
-                <span>Continue Dialogue</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-
-        </div>
-
+          </motion.div>
+        </motion.div>
       </div>
+
+      {/* BOTTOM TRANSITION */}
+      <motion.div
+        style={{
+          scaleX: lineScale,
+        }}
+        className="absolute bottom-0 left-[10%] right-[10%] h-px origin-center bg-gradient-to-r from-transparent via-[#FF6B4A]/40 to-transparent"
+      />
     </section>
   );
 };
