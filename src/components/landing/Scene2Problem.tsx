@@ -1,173 +1,184 @@
-import React, { useState } from 'react';
-import { 
-  AlertTriangle, 
-  Flame, 
-  VolumeX, 
-  TrendingDown, 
-  HelpCircle, 
-  Clock, 
-  CheckCircle, 
-  RefreshCcw
-} from 'lucide-react';
+import React, { useRef } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { Brain, MicOff, MessageSquareWarning } from "lucide-react";
 
 export const Scene2Problem: React.FC = () => {
-  const [selectedPainPoint, setSelectedPainPoint] = useState<number>(0);
+  const sectionRef = useRef<HTMLElement>(null);
 
-  const painPoints = [
-    {
-      icon: <VolumeX className="w-5 h-5 text-rose-400" />,
-      title: 'Freezing Under Pressure',
-      subtitle: 'Knowing the solution in your head, but going blank the second the interviewer looks at you.',
-      stat: '64%',
-      statLabel: 'of candidates experience interview paralysis on behavioral or design questions.',
-      solutionTip: 'SmartPrepration builds muscle memory through low-stakes voice repetitions so your mind remains calm.'
-    },
-    {
-      icon: <Clock className="w-5 h-5 text-amber-400" />,
-      title: 'Speaking Too Fast & Rambling',
-      subtitle: 'Rushing through answers at 180+ WPM without clear structure, leading to disjointed explanations.',
-      stat: '72%',
-      statLabel: 'of rejections cite lack of conciseness or structure rather than incorrect technical knowledge.',
-      solutionTip: 'Our real-time pacing engine monitors your words-per-minute and coaches deliberate cadence.'
-    },
-    {
-      icon: <TrendingDown className="w-5 h-5 text-purple-400" />,
-      title: 'Filler Words & Uncertainty Phrasing',
-      subtitle: 'Relying on "basically", "you know", "I guess", and long awkward pauses when formulating thoughts.',
-      stat: '58%',
-      statLabel: 'of interviewers sub-consciously perceive frequent filler words as lack of domain mastery.',
-      solutionTip: 'Detailed post-interview transcript markers pinpoint every hesitation qualifier for instant correction.'
-    },
-    {
-      icon: <HelpCircle className="w-5 h-5 text-cyan-400" />,
-      title: 'Unpredictable Follow-Ups',
-      subtitle: 'Practicing only static question lists, leaving you totally unprepared when an interviewer challenges your choices.',
-      stat: '85%',
-      statLabel: 'of senior interviews drill deep into "Why did you choose approach X over Y?".',
-      solutionTip: 'SmartPrepration reasons directly over your spoken answer and generates contextual counter-questions.'
-    }
-  ];
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  /* Main text moves forward */
+  const textY = useTransform(scrollYProgress, [0, 0.5], [140, 0]);
+  const textOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.25],
+    [0, 1]
+  );
+
+  /* Cards create depth */
+  const leftX = useTransform(
+    scrollYProgress,
+    [0, 0.6],
+    [-250, 0]
+  );
+
+  const rightX = useTransform(
+    scrollYProgress,
+    [0, 0.6],
+    [250, 0]
+  );
+
+  const middleY = useTransform(
+    scrollYProgress,
+    [0, 0.6],
+    [180, 0]
+  );
+
+  const rotateLeft = useTransform(
+    scrollYProgress,
+    [0, 0.6],
+    [-18, 0]
+  );
+
+  const rotateRight = useTransform(
+    scrollYProgress,
+    [0, 0.6],
+    [18, 0]
+  );
 
   return (
-    <section id="how-it-works" className="py-24 relative overflow-hidden bg-slate-900/30 dark:bg-black/30 border-y border-slate-200/60 dark:border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500 dark:text-rose-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <AlertTriangle className="w-3.5 h-3.5" />
-            <span>THE INTERVIEW GAP</span>
-          </div>
-          
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
-            You may know the answer.{' '}
-            <span className="text-rose-500 dark:text-rose-400">But can you deliver it under pressure?</span>
-          </h2>
-          
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
-            Most candidates fail not because of a lack of knowledge, but because traditional prep is passive. Reading answers is not the same as speaking them in real time.
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen overflow-hidden bg-[var(--bg)] px-6 py-32"
+    >
+      {/* Background atmosphere */}
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#FF6B4A]/[0.04] blur-[160px]" />
+
+      <div className="relative mx-auto max-w-7xl">
+
+        {/* Heading */}
+        <motion.div
+          style={{
+            y: textY,
+            opacity: textOpacity,
+          }}
+          className="mx-auto mb-24 max-w-3xl text-center"
+        >
+          <p className="mb-5 text-sm uppercase tracking-[0.25em] text-[#FF6B4A]">
+            The real problem
           </p>
-        </div>
 
-        {/* Interactive Pain Point Matrix */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          
-          {/* Left List of Common Breakdown Points */}
-          <div className="lg:col-span-6 flex flex-col gap-3.5">
-            {painPoints.map((item, idx) => {
-              const isSelected = selectedPainPoint === idx;
-              return (
-                <div
-                  key={idx}
-                  onClick={() => setSelectedPainPoint(idx)}
-                  className={`p-4 sm:p-5 rounded-2xl cursor-pointer transition-all duration-200 border ${
-                    isSelected
-                      ? 'glass-panel border-cyan-500/50 bg-slate-800/80 dark:bg-white/10 shadow-lg shadow-cyan-500/10'
-                      : 'bg-white/50 dark:bg-slate-900/40 border-slate-200 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/20'
-                  }`}
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10">
-                      {item.icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                          {item.title}
-                        </h3>
-                        {isSelected && (
-                          <span className="text-[11px] font-semibold text-cyan-400 uppercase tracking-wider">
-                            Active Insight
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-                        {item.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <h2 className="text-5xl font-semibold tracking-[-0.04em] text-[var(--text)] md:text-7xl">
+            You don't fail because
+            <br />
+            you don't know enough.
+          </h2>
 
-          {/* Right Live Breakdown Diagnostic Card */}
-          <div className="lg:col-span-6 glass-panel-glow rounded-3xl p-6 sm:p-8 flex flex-col justify-between border border-cyan-500/30">
-            <div>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-6">
-                <div className="flex items-center gap-2">
-                  <Flame className="w-5 h-5 text-rose-400" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                    DIAGNOSTIC IMPACT ANALYSIS
-                  </span>
-                </div>
-                <span className="text-xs font-mono text-cyan-400 font-medium">
-                  Issue #{selectedPainPoint + 1} of 4
-                </span>
-              </div>
+          <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-[var(--muted)]">
+            You fail when pressure changes the way you think, speak,
+            and respond.
+          </p>
+        </motion.div>
 
-              <div className="mb-6">
-                <div className="flex items-baseline gap-3 mb-2">
-                  <span className="text-4xl sm:text-5xl font-black text-rose-500 dark:text-rose-400">
-                    {painPoints[selectedPainPoint].stat}
-                  </span>
-                  <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xs font-medium">
-                    {painPoints[selectedPainPoint].statLabel}
-                  </span>
-                </div>
-              </div>
+        {/* 3D card space */}
+        <div
+          className="relative mx-auto grid max-w-6xl gap-8 md:grid-cols-3"
+          style={{ perspective: "1200px" }}
+        >
 
-              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 mb-6">
-                <div className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">
-                      HOW SMARTPREPRATION FIXES THIS
-                    </h4>
-                    <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
-                      {painPoints[selectedPainPoint].solutionTip}
-                    </p>
-                  </div>
-                </div>
-              </div>
+          {/* Card 1 */}
+          <motion.div
+            style={{
+              x: leftX,
+              rotateY: rotateLeft,
+            }}
+            className="glass min-h-[280px] rounded-[2rem] p-8"
+          >
+            <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF6B4A]/10 text-[#FF6B4A]">
+              <MicOff size={26} />
             </div>
 
-            <div className="pt-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Simulated with 12,000+ mock responses</span>
-              <button
-                onClick={() => setSelectedPainPoint((prev) => (prev + 1) % painPoints.length)}
-                className="flex items-center gap-1 text-cyan-400 hover:underline font-semibold"
-              >
-                <RefreshCcw className="w-3.5 h-3.5" />
-                <span>Next breakdown</span>
-              </button>
+            <h3 className="text-2xl font-semibold text-[var(--text)]">
+              You freeze.
+            </h3>
+
+            <p className="mt-4 leading-relaxed text-[var(--muted)]">
+              You know the answer, but pressure interrupts your ability
+              to communicate it clearly.
+            </p>
+          </motion.div>
+
+          {/* Card 2 */}
+          <motion.div
+            style={{
+              y: middleY,
+              scale: useTransform(
+                scrollYProgress,
+                [0, 0.6],
+                [0.82, 1]
+              ),
+            }}
+            className="glass relative z-10 min-h-[310px] rounded-[2rem] border-[#D6FF3F]/20 p-8 shadow-[0_30px_100px_rgba(214,255,63,0.06)]"
+          >
+            <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D6FF3F]/10 text-[#D6FF3F]">
+              <Brain size={26} />
             </div>
 
-          </div>
+            <h3 className="text-2xl font-semibold text-[var(--text)]">
+              You overthink.
+            </h3>
+
+            <p className="mt-4 leading-relaxed text-[var(--muted)]">
+              The question becomes harder because you're trying to find
+              the perfect answer instead of thinking clearly.
+            </p>
+
+            <div className="absolute bottom-6 right-6 h-3 w-3 animate-pulse rounded-full bg-[#D6FF3F]" />
+          </motion.div>
+
+          {/* Card 3 */}
+          <motion.div
+            style={{
+              x: rightX,
+              rotateY: rotateRight,
+            }}
+            className="glass min-h-[280px] rounded-[2rem] p-8"
+          >
+            <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF6B4A]/10 text-[#FF6B4A]">
+              <MessageSquareWarning size={26} />
+            </div>
+
+            <h3 className="text-2xl font-semibold text-[var(--text)]">
+              You lose structure.
+            </h3>
+
+            <p className="mt-4 leading-relaxed text-[var(--muted)]">
+              Your ideas are good, but your answer starts wandering
+              when the interviewer pushes deeper.
+            </p>
+          </motion.div>
 
         </div>
-
       </div>
+
+      {/* Decorative depth lines */}
+      <motion.div
+        style={{
+          scaleX: useTransform(
+            scrollYProgress,
+            [0, 0.6],
+            [0.2, 1]
+          ),
+        }}
+        className="absolute bottom-0 left-[10%] right-[10%] h-px origin-center bg-gradient-to-r from-transparent via-[#D6FF3F]/40 to-transparent"
+      />
     </section>
   );
 };
