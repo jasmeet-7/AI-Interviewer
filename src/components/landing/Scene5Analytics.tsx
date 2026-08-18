@@ -43,12 +43,12 @@ const metrics = [
     score: 87,
     icon: Mic,
     description:
-      "Good pace and energy with a few moments of hesitation.",
-    color: "#D6FF3F",
+      "Good pace and energy with only a few moments of hesitation.",
+    color: "#7DD3FC",
   },
 ];
 
-export const Analytics: React.FC = () => {
+export const Scene5Analytics: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeMetric, setActiveMetric] = useState("confidence");
 
@@ -57,11 +57,7 @@ export const Analytics: React.FC = () => {
     offset: ["start end", "end start"],
   });
 
-  const headingY = useTransform(
-    scrollYProgress,
-    [0, 0.4],
-    [100, 0]
-  );
+  const headingY = useTransform(scrollYProgress, [0, 0.4], [100, 0]);
 
   const headingOpacity = useTransform(
     scrollYProgress,
@@ -78,23 +74,20 @@ export const Analytics: React.FC = () => {
   const dashboardScale = useTransform(
     scrollYProgress,
     [0, 0.55],
-    [0.9, 1]
+    [0.92, 1]
   );
 
-  const active = metrics.find(
-    (metric) => metric.id === activeMetric
-  )!;
+  const active =
+    metrics.find((metric) => metric.id === activeMetric) ?? metrics[0];
 
   return (
     <section
       ref={sectionRef}
       className="relative min-h-screen overflow-hidden bg-[var(--bg)] px-6 py-32"
     >
-      {/* Ambient background */}
-      <div className="pointer-events-none absolute left-1/2 top-[45%] h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-[#D6FF3F]/[0.035] blur-[180px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D6FF3F]/[0.035] blur-[180px]" />
 
       <div className="relative mx-auto max-w-7xl">
-        {/* Heading */}
         <motion.div
           style={{
             y: headingY,
@@ -120,12 +113,11 @@ export const Analytics: React.FC = () => {
 
           <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
             Don't leave an interview wondering whether you did well.
-            See exactly where you performed, where you hesitated,
-            and what to improve next.
+            See where you performed, where you hesitated, and what to
+            improve next.
           </p>
         </motion.div>
 
-        {/* ANALYTICS DASHBOARD */}
         <motion.div
           style={{
             y: dashboardY,
@@ -134,8 +126,6 @@ export const Analytics: React.FC = () => {
           className="mx-auto max-w-6xl"
         >
           <div className="overflow-hidden rounded-[2rem] border border-white/[0.08] bg-white/[0.025] shadow-[0_40px_120px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-            
-            {/* Dashboard header */}
             <div className="flex flex-col gap-6 border-b border-white/[0.07] p-6 md:flex-row md:items-center md:justify-between md:p-8">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
@@ -157,8 +147,6 @@ export const Analytics: React.FC = () => {
             </div>
 
             <div className="grid gap-8 p-6 md:grid-cols-[0.9fr_1.1fr] md:p-10">
-              
-              {/* OVERALL SCORE */}
               <div className="flex flex-col items-center justify-center rounded-[1.5rem] border border-[#D6FF3F]/10 bg-[#D6FF3F]/[0.025] p-8">
                 <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                   Overall score
@@ -192,11 +180,10 @@ export const Analytics: React.FC = () => {
 
                 <p className="mt-8 max-w-xs text-center text-sm leading-relaxed text-[var(--muted)]">
                   You're performing well overall, but stronger reasoning
-                  under pressure could push this higher.
+                  under pressure could push this score even higher.
                 </p>
               </div>
 
-              {/* METRICS */}
               <div className="grid gap-4 sm:grid-cols-2">
                 {metrics.map((metric, index) => {
                   const Icon = metric.icon;
@@ -206,21 +193,11 @@ export const Analytics: React.FC = () => {
                     <motion.button
                       key={metric.id}
                       type="button"
-                      initial={{
-                        opacity: 0,
-                        y: 30,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{
-                        delay: index * 0.08,
-                      }}
-                      onClick={() =>
-                        setActiveMetric(metric.id)
-                      }
+                      transition={{ delay: index * 0.08 }}
+                      onClick={() => setActiveMetric(metric.id)}
                       className={`group relative overflow-hidden rounded-[1.25rem] border p-6 text-left transition-all duration-300 ${
                         isActive
                           ? "border-[#D6FF3F]/30 bg-[#D6FF3F]/[0.06]"
@@ -248,9 +225,7 @@ export const Analytics: React.FC = () => {
 
                         <p
                           className="mt-1 text-4xl font-semibold tracking-[-0.04em]"
-                          style={{
-                            color: metric.color,
-                          }}
+                          style={{ color: metric.color }}
                         >
                           {metric.score}%
                         </p>
@@ -279,18 +254,11 @@ export const Analytics: React.FC = () => {
               </div>
             </div>
 
-            {/* ACTIVE METRIC INSIGHT */}
             <div className="border-t border-white/[0.07] p-6 md:px-10 md:py-8">
               <motion.div
                 key={active.id}
-                initial={{
-                  opacity: 0,
-                  x: -15,
-                }}
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                }}
+                initial={{ opacity: 0, x: -15 }}
+                animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
               >
                 <div>
@@ -307,7 +275,10 @@ export const Analytics: React.FC = () => {
                   </p>
                 </div>
 
-                <button className="flex items-center gap-2 self-start rounded-full border border-[#D6FF3F]/20 px-5 py-3 text-sm text-[#D6FF3F] transition-all hover:bg-[#D6FF3F] hover:text-[#090B0A]">
+                <button
+                  type="button"
+                  className="flex items-center gap-2 self-start rounded-full border border-[#D6FF3F]/20 px-5 py-3 text-sm text-[#D6FF3F] transition-all hover:bg-[#D6FF3F] hover:text-[#090B0A]"
+                >
                   Improve this skill
                   <ArrowUpRight className="h-4 w-4" />
                 </button>
