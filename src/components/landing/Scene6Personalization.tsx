@@ -1,173 +1,284 @@
-import React, { useState } from 'react';
-import { 
-  FileText, 
-  Briefcase, 
-  Sparkles, 
-  CheckCircle, 
-  Cpu, 
-  ChevronRight
-} from 'lucide-react';
-import { SAMPLE_RESUME_PRESETS } from '../../services/mockData';
+import React, { useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  Sparkles,
+  Briefcase,
+  Target,
+  Brain,
+  ArrowRight,
+  Check,
+  SlidersHorizontal,
+} from "lucide-react";
+
+const profiles = [
+  {
+    id: "product",
+    role: "Product Manager",
+    level: "Mid-level",
+    focus: "Strategic reasoning",
+    description:
+      "The AI detected that your answers are clear, but your reasoning needs more depth under pressure.",
+    challenge: "Defend your decision with stronger evidence.",
+    icon: Target,
+  },
+  {
+    id: "engineering",
+    role: "Software Engineer",
+    level: "Mid-level",
+    focus: "Technical communication",
+    description:
+      "The AI adapts the interview to test how clearly you explain complex technical decisions.",
+    challenge: "Explain your trade-offs without losing clarity.",
+    icon: Brain,
+  },
+  {
+    id: "leadership",
+    role: "Team Lead",
+    level: "Senior",
+    focus: "Leadership depth",
+    description:
+      "The next interview focuses more heavily on conflict, ownership, and decision-making.",
+    challenge: "Show how you lead through uncertainty.",
+    icon: Briefcase,
+  },
+];
 
 export const Scene6Personalization: React.FC = () => {
-  const [selectedPresetIndex, setSelectedPresetIndex] = useState<number>(0);
-  const currentPreset = SAMPLE_RESUME_PRESETS[selectedPresetIndex];
+  const sectionRef = useRef<HTMLElement>(null);
+  const [activeProfile, setActiveProfile] = useState(0);
 
-  const generatedQuestions = [
-    [
-      '“You mentioned architecting a distributed Redis cache at your previous company. What was your invalidation strategy during write bursts?”',
-      '“How did you migrate your PostgreSQL monolith to microservices with zero downtime?”'
-    ],
-    [
-      '“In your RAG pipeline project, how did you mitigate hallucinations when retrieving multi-document vector chunks?”',
-      '“What latency optimization techniques did you use when deploying LLM inference on AWS SageMaker?”'
-    ],
-    [
-      '“You mentioned launching a zero-to-one B2B SaaS product. How did you validate PMF and define the initial pricing tiers?”',
-      '“Tell me about a time an A/B experiment failed. What data did you use to pivot the roadmap?”'
-    ]
-  ];
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const headingY = useTransform(
+    scrollYProgress,
+    [0, 0.4],
+    [100, 0]
+  );
+
+  const headingOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.25],
+    [0, 1]
+  );
+
+  const contentY = useTransform(
+    scrollYProgress,
+    [0, 0.55],
+    [120, 0]
+  );
+
+  const active = profiles[activeProfile];
+  const ActiveIcon = active.icon;
 
   return (
-    <section className="py-24 relative overflow-hidden bg-slate-900/40 dark:bg-black/40 border-y border-slate-200/60 dark:border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-4">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>RESUME + JOB DESCRIPTION INTELLIGENCE</span>
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen overflow-hidden bg-[var(--bg)] px-6 py-32"
+    >
+      {/* Ambient glow */}
+      <div className="pointer-events-none absolute left-[-10%] top-[25%] h-[600px] w-[600px] rounded-full bg-[#A78BFA]/[0.05] blur-[180px]" />
+
+      <div className="relative mx-auto max-w-7xl">
+        {/* Heading */}
+        <motion.div
+          style={{
+            y: headingY,
+            opacity: headingOpacity,
+          }}
+          className="mx-auto mb-24 max-w-4xl text-center"
+        >
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#A78BFA]/20 bg-[#A78BFA]/5 px-4 py-2">
+            <SlidersHorizontal className="h-4 w-4 text-[#A78BFA]" />
+
+            <span className="text-xs uppercase tracking-[0.2em] text-[#A78BFA]">
+              Adaptive interview system
+            </span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
-            Zero generic questions.{' '}
-            <span className="gradient-text-brand">Tailored to your exact background.</span>
+          <h2 className="text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-[var(--text)] md:text-7xl">
+            It doesn't give
+            <br />
+            everyone the same
+            <span className="text-[#A78BFA]"> interview.</span>
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
-            Upload your resume or paste a specific job description. SmartPrepration extracts your key projects, tech stack, and target seniority to conduct hyper-realistic interviews.
+          <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-[var(--muted)]">
+            SmartPrepration adapts to your role, experience,
+            strengths, weaknesses, and previous interview performance.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Interactive Preset Switcher */}
-        <div className="flex justify-center gap-2 mb-8 flex-wrap">
-          {SAMPLE_RESUME_PRESETS.map((preset, idx) => (
-            <button
-              key={idx}
-              onClick={() => setSelectedPresetIndex(idx)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 border ${
-                selectedPresetIndex === idx
-                  ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20 scale-105'
-                  : 'bg-slate-100 dark:bg-white/5 text-slate-400 border-slate-200 dark:border-white/10 hover:text-white'
-              }`}
-            >
-              <Briefcase className="w-3.5 h-3.5" />
-              <span>{preset.role}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Interactive Resume Matching Board */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          
-          {/* Left: Extracted Candidate Intelligence */}
-          <div className="lg:col-span-5 glass-panel rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-white/10 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-3 pb-4 border-b border-slate-200 dark:border-white/10 mb-5">
-                <div className="p-2.5 rounded-xl bg-cyan-500/20 text-cyan-400">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                    {currentPreset.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {currentPreset.role} • {currentPreset.experience}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mb-5">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
-                  AI-Extracted Core Skills
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {currentPreset.skills.map((skill, sIdx) => (
-                    <span
-                      key={sIdx}
-                      className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-cyan-600 dark:text-cyan-300 border border-slate-200 dark:border-white/10"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
+        {/* Main personalization interface */}
+        <motion.div
+          style={{ y: contentY }}
+          className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]"
+        >
+          {/* Profile selector */}
+          <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.025] p-5 backdrop-blur-xl">
+            <div className="mb-6 flex items-center gap-3 px-2">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#A78BFA]/10">
+                <Sparkles className="h-5 w-5 text-[#A78BFA]" />
               </div>
 
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
-                  Profile Synopsis
-                </span>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-white/5 p-3 rounded-xl border border-slate-200 dark:border-white/5">
-                  {currentPreset.summary}
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
+                  Candidate profile
+                </p>
+
+                <p className="text-sm font-medium text-[var(--text)]">
+                  Choose your path
                 </p>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 flex items-center justify-between">
-              <span>PDF & DOCX parsing supported</span>
-              <span className="text-cyan-400 font-semibold flex items-center gap-1">
-                AI Parsed <CheckCircle className="w-3.5 h-3.5" />
-              </span>
-            </div>
-          </div>
+            <div className="space-y-3">
+              {profiles.map((profile, index) => {
+                const Icon = profile.icon;
+                const isActive = activeProfile === index;
 
-          {/* Center Connector Arrow on Desktop */}
-          <div className="hidden lg:flex lg:col-span-2 flex-col items-center justify-center">
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-lg shadow-cyan-500/10">
-              <Sparkles className="w-6 h-6 animate-pulse" />
-            </div>
-            <span className="text-[11px] font-mono text-slate-400 mt-2">AI Synthesis</span>
-          </div>
-
-          {/* Right: Dynamically Tailored Questions */}
-          <div className="lg:col-span-5 glass-panel-glow rounded-3xl p-6 sm:p-7 border border-cyan-500/30 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-5">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                  GENERATED RESUME-DEEPDIVE QUESTIONS
-                </span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                  Targeted
-                </span>
-              </div>
-
-              <div className="space-y-4">
-                {generatedQuestions[selectedPresetIndex].map((q, qIdx) => (
-                  <div
-                    key={qIdx}
-                    className="p-4 rounded-2xl bg-slate-900/60 dark:bg-black/60 border border-cyan-500/30 text-xs sm:text-sm text-slate-100 font-medium leading-relaxed relative group"
+                return (
+                  <button
+                    key={profile.id}
+                    type="button"
+                    onClick={() => setActiveProfile(index)}
+                    className={`w-full rounded-2xl border p-5 text-left transition-all duration-300 ${
+                      isActive
+                        ? "border-[#A78BFA]/35 bg-[#A78BFA]/[0.07]"
+                        : "border-white/[0.07] bg-white/[0.015] hover:border-white/[0.15]"
+                    }`}
                   >
-                    <div className="flex items-start gap-2.5">
-                      <span className="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-mono text-[10px] font-bold mt-0.5 shrink-0">
-                        Q{qIdx + 1}
-                      </span>
-                      <span>{q}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                            isActive
+                              ? "bg-[#A78BFA]/15"
+                              : "bg-white/[0.04]"
+                          }`}
+                        >
+                          <Icon
+                            className={`h-5 w-5 ${
+                              isActive
+                                ? "text-[#A78BFA]"
+                                : "text-[var(--muted)]"
+                            }`}
+                          />
+                        </div>
 
-            <div className="mt-6 pt-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs">
-              <span className="text-slate-500">Adapts during live conversation</span>
-              <span className="text-cyan-400 font-semibold flex items-center gap-1">
-                Context-Aware <ChevronRight className="w-3.5 h-3.5" />
-              </span>
+                        <div>
+                          <p className="font-medium text-[var(--text)]">
+                            {profile.role}
+                          </p>
+
+                          <p className="mt-1 text-xs text-[var(--muted)]">
+                            {profile.level}
+                          </p>
+                        </div>
+                      </div>
+
+                      {isActive && (
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#A78BFA]">
+                          <Check className="h-3.5 w-3.5 text-[#090B0A]" />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-        </div>
+          {/* AI personalized plan */}
+          <motion.div
+            key={active.id}
+            initial={{
+              opacity: 0,
+              x: 30,
+            }}
+            animate={{
+              opacity: 1,
+              x: 0,
+            }}
+            transition={{
+              duration: 0.35,
+            }}
+            className="relative overflow-hidden rounded-[2rem] border border-[#A78BFA]/15 bg-white/[0.025] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-10"
+          >
+            <div className="pointer-events-none absolute right-[-10%] top-[-20%] h-[350px] w-[350px] rounded-full bg-[#A78BFA]/[0.06] blur-[120px]" />
 
+            <div className="relative">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-[#A78BFA]">
+                    AI generated plan
+                  </p>
+
+                  <h3 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-[var(--text)] md:text-4xl">
+                    Built around
+                    <br />
+                    <span className="text-[#A78BFA]">
+                      your performance.
+                    </span>
+                  </h3>
+                </div>
+
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#A78BFA]/20 bg-[#A78BFA]/10">
+                  <ActiveIcon className="h-6 w-6 text-[#A78BFA]" />
+                </div>
+              </div>
+
+              <div className="mt-10 grid gap-4">
+                <div className="rounded-2xl border border-white/[0.07] bg-black/[0.12] p-5">
+                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+                    Your role
+                  </p>
+
+                  <p className="mt-2 text-xl font-medium text-[var(--text)]">
+                    {active.role}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/[0.07] bg-black/[0.12] p-5">
+                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--muted)]">
+                    Priority focus
+                  </p>
+
+                  <p className="mt-2 text-xl font-medium text-[#D6FF3F]">
+                    {active.focus}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-[#FF6B4A]/15 bg-[#FF6B4A]/[0.03] p-5">
+                  <p className="text-xs uppercase tracking-[0.16em] text-[#FF6B4A]">
+                    Next challenge
+                  </p>
+
+                  <p className="mt-3 text-lg leading-relaxed text-[var(--text)]">
+                    {active.challenge}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-8 border-t border-white/[0.07] pt-7">
+                <p className="max-w-xl leading-relaxed text-[var(--muted)]">
+                  {active.description}
+                </p>
+
+                <button
+                  type="button"
+                  className="group mt-7 inline-flex items-center gap-2 rounded-full bg-[#A78BFA] px-6 py-3 text-sm font-semibold text-[#090B0A] transition-all hover:scale-[1.03]"
+                >
+                  Generate next interview
+
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
