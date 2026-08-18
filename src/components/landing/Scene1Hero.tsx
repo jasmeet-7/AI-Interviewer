@@ -1,156 +1,164 @@
-import React from 'react';
-import { useApp } from '../../context/AppContext';
-import { Hero3DCanvas } from '../three/Hero3DCanvas';
-import { 
-  Sparkles, 
-  ArrowRight, 
-  Mic, 
-  BrainCircuit, 
-  Play,
-  Activity,
-  ShieldCheck
-} from 'lucide-react';
+import React from "react";
+import { ArrowRight, Play, Sparkles } from "lucide-react";
 
 export const Scene1Hero: React.FC = () => {
-  const { setView, startNewInterview } = useApp();
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-28 pb-16 overflow-hidden">
+    <section className="ambient-bg relative min-h-screen overflow-hidden px-6 pt-32 pb-20">
       
-      {/* Soft Glow Background Ambient Orbs */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-500/15 via-blue-600/10 to-indigo-600/10 rounded-full blur-3xl pointer-events-none -z-10 animate-pulse-glow" />
+      {/* Background grid */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.035]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(242,240,233,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(242,240,233,0.4) 1px, transparent 1px)",
+          backgroundSize: "70px 70px",
+        }}
+      />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      {/* Decorative glow */}
+      <div className="absolute right-[10%] top-[20%] h-[500px] w-[500px] rounded-full bg-[#D6FF3F]/[0.06] blur-[140px]" />
+
+      <div className="relative mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
+        
+        {/* LEFT SIDE */}
+        <div className="relative z-10">
           
-          {/* Left Hero Content */}
-          <div className="lg:col-span-7 flex flex-col items-start text-left z-10">
+          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm text-[var(--muted)]">
+            <Sparkles size={15} className="text-[#D6FF3F]" />
+            AI-powered interview preparation
+          </div>
+
+          <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-[var(--text)] md:text-7xl lg:text-8xl">
+            Don't just prepare
+            <br />
+            for the{" "}
+            <span className="text-[#D6FF3F]">
+              interview.
+            </span>
+            <br />
+            Prepare for the
+            <br />
+            <span className="text-[var(--muted)]">
+              pressure.
+            </span>
+          </h1>
+
+          <p className="mt-8 max-w-xl text-lg leading-relaxed text-[var(--muted)] md:text-xl">
+            Practice with an AI interviewer that listens to how you speak,
+            challenges your reasoning, detects hesitation, and helps you
+            become genuinely interview-ready.
+          </p>
+
+          {/* CTA */}
+          <div className="mt-10 flex flex-wrap gap-4">
             
-            {/* Top Brand Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 dark:bg-cyan-500/15 border border-cyan-500/30 text-cyan-600 dark:text-cyan-300 text-xs font-semibold tracking-wide mb-6">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>NEXT-GEN AI INTERVIEW COACH</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-            </div>
+            <button className="btn-primary flex items-center gap-3 rounded-full px-7 py-4 font-semibold">
+              Try your first interview
+              <ArrowRight size={18} />
+            </button>
 
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.12] tracking-tight mb-6">
-              Smart interview preparation should feel{' '}
-              <span className="gradient-text-brand">like the real thing.</span>
-            </h1>
-
-            {/* Sub-Headline & Core Philosophy */}
-            <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-normal leading-relaxed max-w-2xl mb-8">
-              Knowing the answer isn&apos;t enough. You need to communicate it like you&apos;re ready for the job. Practice with an interactive 3D AI interviewer that listens, challenges, and sharpens your delivery.
-            </p>
-
-            {/* Action CTAs */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10">
-              <button
-                onClick={() => setView('onboarding')}
-                className="btn-primary px-7 py-3.5 text-base font-semibold shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2.5 group"
-              >
-                <span>Try Free Interview</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <button
-                onClick={() => setView('questions')}
-                className="btn-secondary px-6 py-3.5 text-base font-medium flex items-center justify-center gap-2"
-              >
-                <Play className="w-4 h-4 text-cyan-400 fill-cyan-400/20" />
-                <span>Explore Practice Questions</span>
-              </button>
-            </div>
-
-            {/* Feature Trust Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-6 border-t border-slate-200 dark:border-white/10 w-full">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center text-cyan-400">
-                  <Mic className="w-4 h-4" />
-                </div>
-                <div className="text-xs">
-                  <p className="font-semibold text-slate-800 dark:text-slate-200">Spoken Voice + Camera</p>
-                  <p className="text-slate-500 dark:text-slate-400">Natural conversation</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                  <BrainCircuit className="w-4 h-4" />
-                </div>
-                <div className="text-xs">
-                  <p className="font-semibold text-slate-800 dark:text-slate-200">Adaptive Follow-ups</p>
-                  <p className="text-slate-500 dark:text-slate-400">Deep answer reasoning</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2.5 col-span-2 sm:col-span-1">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                  <ShieldCheck className="w-4 h-4" />
-                </div>
-                <div className="text-xs">
-                  <p className="font-semibold text-slate-800 dark:text-slate-200">Privacy First</p>
-                  <p className="text-slate-500 dark:text-slate-400">No forced recordings</p>
-                </div>
-              </div>
-            </div>
+            <button className="btn-secondary flex items-center gap-3 rounded-full px-7 py-4 font-medium">
+              <Play size={16} />
+              See how it works
+            </button>
 
           </div>
 
-          {/* Right Floating 3D Interactive Mock Studio */}
-          <div className="lg:col-span-5 relative w-full flex items-center justify-center">
+          <p className="mt-5 text-sm text-[var(--muted)]">
+            No pressure. Start with a free interview.
+          </p>
+        </div>
+
+        {/* RIGHT SIDE — 3D INTERVIEW CARD */}
+        <div className="relative flex min-h-[500px] items-center justify-center">
+          
+          {/* Orbit */}
+          <div className="absolute h-[440px] w-[440px] rounded-full border border-[#D6FF3F]/20 animate-[spin_18s_linear_infinite]" />
+
+          <div className="absolute h-[340px] w-[340px] rounded-full border border-[var(--border)]" />
+
+          {/* Main AI panel */}
+          <div className="glass relative z-10 w-full max-w-md rounded-[2rem] p-5 shadow-2xl transition-transform duration-500 hover:rotate-[1deg] hover:scale-[1.02]">
             
-            {/* 3D Canvas Container with Glass Frame */}
-            <div className="w-full relative glass-panel-glow rounded-3xl p-3 border border-slate-200/60 dark:border-white/15 overflow-hidden">
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
+                  Interview session
+                </p>
+
+                <h3 className="mt-1 font-medium text-[var(--text)]">
+                  Product Manager
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-full bg-[#D6FF3F]/10 px-3 py-1.5 text-xs text-[#D6FF3F]">
+                <span className="h-2 w-2 animate-pulse rounded-full bg-[#D6FF3F]" />
+                Listening
+              </div>
+            </div>
+
+            {/* AI Core */}
+            <div className="relative flex h-64 items-center justify-center">
               
-              {/* Top Studio Bar */}
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-200 dark:border-white/10 bg-slate-100/50 dark:bg-white/5 rounded-t-2xl">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                  <span className="ml-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
-                    AI Mock Studio • Live Preview
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                    <Activity className="w-2.5 h-2.5 animate-pulse" /> 3D ACTIVE
-                  </span>
-                </div>
+              <div className="absolute h-48 w-48 animate-pulse rounded-full bg-[#D6FF3F]/10 blur-2xl" />
+
+              <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-[#D6FF3F]/40 bg-[#D6FF3F]/10 shadow-[0_0_80px_rgba(214,255,63,0.15)]">
+                <div className="h-20 w-20 rounded-full border border-[#D6FF3F]/50 bg-[#0A0A0B]" />
               </div>
 
-              {/* Interactive 3D Canvas */}
-              <div className="relative w-full h-[360px] sm:h-[420px] bg-gradient-to-b from-[#0F172A]/40 to-[#0B0F17]/80 rounded-b-2xl overflow-hidden flex items-center justify-center">
-                <Hero3DCanvas />
-
-                {/* Floating Quick Action Overlay */}
-                <div className="absolute bottom-4 left-4 right-4 p-3.5 glass-panel rounded-xl border border-cyan-500/30 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                      <Mic className="w-4 h-4 animate-bounce" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-slate-800 dark:text-white">Live Voice Simulation</p>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-300">Interactive mouse parallax enabled</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => startNewInterview()}
-                    className="px-3 py-1.5 text-xs font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-950 rounded-lg transition-colors shadow-md"
-                  >
-                    Launch Studio
-                  </button>
-                </div>
+              {/* Floating analysis */}
+              <div className="absolute right-0 top-8 glass rounded-2xl px-4 py-3 text-xs">
+                <p className="text-[var(--muted)]">Confidence</p>
+                <p className="mt-1 text-lg font-semibold text-[#D6FF3F]">
+                  82%
+                </p>
               </div>
 
+              <div className="absolute bottom-5 left-0 glass rounded-2xl px-4 py-3 text-xs">
+                <p className="text-[var(--muted)]">Speaking pace</p>
+                <p className="mt-1 font-medium text-[var(--text)]">
+                  Good
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[var(--border)] bg-black/20 p-4">
+              <p className="text-xs text-[var(--muted)]">
+                AI INTERVIEWER
+              </p>
+
+              <p className="mt-2 leading-relaxed text-[var(--text)]">
+                “Tell me about a time you had to make a difficult decision with
+                limited information.”
+              </p>
+            </div>
+
+            {/* Voice wave */}
+            <div className="mt-5 flex h-10 items-center justify-center gap-1">
+              {[20, 35, 18, 45, 28, 52, 30, 40, 22, 36, 18].map(
+                (height, index) => (
+                  <span
+                    key={index}
+                    className="w-1 rounded-full bg-[#D6FF3F] animate-pulse"
+                    style={{
+                      height: `${height}px`,
+                      animationDelay: `${index * 0.08}s`,
+                    }}
+                  />
+                )
+              )}
             </div>
 
           </div>
-
         </div>
       </div>
+
+      {/* Bottom scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+        <span>Scroll to enter</span>
+        <div className="h-8 w-px bg-gradient-to-b from-[#D6FF3F] to-transparent" />
+      </div>
+
     </section>
   );
 };
