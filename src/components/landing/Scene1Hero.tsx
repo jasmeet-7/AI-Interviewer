@@ -28,7 +28,7 @@ export const Scene1Hero: React.FC = () => {
             AI-powered interview preparation
           </div>
 
-          <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-[var(--text)] md:text-7xl lg:text-8xl">
+          <h1 className="max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.04em] text-[var(--text)] md:text-5xl lg:text-6xl">
             Don't just prepare
             <br />
             for the{" "}
